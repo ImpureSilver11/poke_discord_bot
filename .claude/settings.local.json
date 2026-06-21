@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bundle exec *)",
+      "Bash(TOKEN=dummy bundle exec ruby main.rb)"
+    ]
+  }
+}
