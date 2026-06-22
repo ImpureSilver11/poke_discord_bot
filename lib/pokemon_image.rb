@@ -17,7 +17,7 @@ GIF89    = "GIF89a".b.freeze
 JPEG_SOF = [0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf].freeze
 
 def bing_pokemon_img_urls(command)
-  query = "(ポケットモンスター OR ポケモン OR pokemon) (日本語版 OR 日本語 OR Japanese) #{command} カード"
+  query = "#{command} (ポケットモンスター OR ポケモン OR pokemon) (日本語版 OR 日本語 OR Japanese) カード"
 
   params = URI.encode_www_form(q: query, qft: '+filterui:aspect-tall', form: 'HDRSC2', first: '1')
   url    = "https://www.bing.com/images/search?#{params}"
