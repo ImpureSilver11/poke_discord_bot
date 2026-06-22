@@ -1,0 +1,15 @@
+# fly.toml app configuration file generated for poke-discord-bot-drifting-songbird-9709 on 2026-06-22T22:19:46+09:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'poke-discord-bot-drifting-songbird-9709'
+primary_region = 'nrt'
+
+[build]
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 1024

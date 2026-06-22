@@ -1,0 +1,7 @@
+# flyctl launch added from .gitignore
+**/.env
+img
+
+# flyctl launch added from .ruby-lsp/.gitignore
+.ruby-lsp/**/*
+fly.toml
