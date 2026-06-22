@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(bundle exec *)",
-      "Bash(TOKEN=dummy bundle exec ruby main.rb)"
+      "Bash(TOKEN=dummy bundle exec ruby main.rb)",
+      "Bash(ruby *)",
+      "Bash(perl -i -0pe 's/,\\\\s*\\\\]$/\\\\n]/s' /Users/takahashimasahiro/hobby/poke_discord_bot/data/pokemon_data.json)"
     ]
   }
 }
