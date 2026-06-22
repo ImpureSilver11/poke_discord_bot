@@ -16,12 +16,8 @@ GIF87    = "GIF87a".b.freeze
 GIF89    = "GIF89a".b.freeze
 JPEG_SOF = [0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf].freeze
 
-def bing_pokemon_img_urls(command, prefer_japanese: false)
-  query = if prefer_japanese
-    "#{command} (ポケットモンスター OR ポケモン OR pokemon) (日本語版 OR 日本語 OR Japanese) カード"
-  else
-    "#{command} (ポケットモンスター OR ポケモン OR pokemon OR pocketmonster) カード"
-  end
+def bing_pokemon_img_urls(command)
+  query = "(ポケットモンスター OR ポケモン OR pokemon) (日本語版 OR 日本語 OR Japanese) #{command} カード"
 
   params = URI.encode_www_form(q: query, qft: '+filterui:aspect-tall', form: 'HDRSC2', first: '1')
   url    = "https://www.bing.com/images/search?#{params}"
@@ -72,8 +68,7 @@ def download_first_card_like_image(image_urls)
 end
 
 def download_first_bing_pokemon_image(command)
-  result = download_first_card_like_image(bing_pokemon_img_urls(command, prefer_japanese: true))
-  result || download_first_card_like_image(bing_pokemon_img_urls(command))
+  download_first_card_like_image(bing_pokemon_img_urls(command))
 rescue StandardError
   nil
 end
