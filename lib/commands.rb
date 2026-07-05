@@ -16,7 +16,7 @@ def register_commands(bot)
     pokemon_name = event.options['query']
     event.defer(ephemeral: false)
 
-    result = download_first_bing_pokemon_image(pokemon_name)
+    result = download_first_tcg_pokemon_image(pokemon_name)
 
     if result.nil?
       event.send_message(content: '画像の取得に失敗しました＞＜')
