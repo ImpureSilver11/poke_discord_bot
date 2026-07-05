@@ -19,7 +19,7 @@ def register_commands(bot)
     result = download_first_tcg_pokemon_image(pokemon_name)
 
     if result.nil?
-      event.send_message(content: '画像の取得に失敗しました＞＜')
+      event.send_message(content: 'ティロンティロンティロティロロティロンティロ＞＜')
       next
     end
 
