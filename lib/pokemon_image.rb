@@ -9,23 +9,29 @@ def tcgdex_search_cards(query)
   url    = "#{TCGDEX_API_BASE}/cards?#{params}"
   result = http_get_json(url)
   result.is_a?(Array) ? result : []
-rescue StandardError
+rescue StandardError => e
+  warn "[tcgdex_search_cards] #{e.class}: #{e.message} (query=#{query})"
   []
 end
 
 def download_first_tcg_pokemon_image(query)
-  cards = tcgdex_search_cards(query)
-  return nil if cards.empty?
+  cards = tcgdex_search_cards(query).select { |c| c['image'] }
+  if cards.empty?
+    warn "[download_first_tcg_pokemon_image] no cards found for query=#{query}"
+    return nil
+  end
 
   card       = cards.sample
-  image_base = card['image']
-  return nil unless image_base
-
-  bytes, content_type = http_get_image("#{image_base}/high.webp")
-  return nil unless bytes
+  image_url  = "#{card['image']}/high.webp"
+  bytes, content_type = http_get_image(image_url)
+  if bytes.nil?
+    warn "[download_first_tcg_pokemon_image] image download failed: #{image_url}"
+    return nil
+  end
 
   [bytes, "pokemon_card#{extension_from_content_type(content_type)}"]
-rescue StandardError
+rescue StandardError => e
+  warn "[download_first_tcg_pokemon_image] #{e.class}: #{e.message} (query=#{query})"
   nil
 end
 
@@ -37,10 +43,14 @@ def http_get_json(url)
   http.open_timeout = 10
 
   response = http.get(uri.request_uri, 'Accept' => 'application/json')
-  return nil unless response.is_a?(Net::HTTPSuccess)
+  unless response.is_a?(Net::HTTPSuccess)
+    warn "[http_get_json] HTTP #{response.code}: #{url}"
+    return nil
+  end
 
   JSON.parse(response.body)
-rescue StandardError
+rescue StandardError => e
+  warn "[http_get_json] #{e.class}: #{e.message} (url=#{url})"
   nil
 end
 
@@ -65,10 +75,13 @@ def http_get_image(url, max_redirects: 5)
     when Net::HTTPRedirection
       uri = URI(response['location'])
     else
+      warn "[http_get_image] HTTP #{response.code}: #{url}"
       return nil
     end
   end
+  warn "[http_get_image] too many redirects: #{url}"
   nil
-rescue StandardError
+rescue StandardError => e
+  warn "[http_get_image] #{e.class}: #{e.message} (url=#{url})"
   nil
 end
