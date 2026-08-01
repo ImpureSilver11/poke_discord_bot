@@ -4,11 +4,18 @@ require 'uri'
 
 TCGDEX_API_BASE = 'https://api.tcgdex.net/v2/ja'
 
+# ログの使い分け:
+#   puts (stdout) … 正常系の進行状況。「該当0件」も検索の正常な結果なのでこちら
+#   warn (stderr) … 異常系。HTTP エラー・例外・想定外のレスポンスなど、運用者が対処すべきもの
+
 def tcgdex_search_cards(query)
   params = URI.encode_www_form('name' => query)
   url    = "#{TCGDEX_API_BASE}/cards?#{params}"
   result = http_get_json(url)
-  result.is_a?(Array) ? result : []
+  return [] unless result.is_a?(Array)
+
+  puts "[tcgdex_search_cards] #{result.size} 件ヒット (query=#{query})"
+  result
 rescue StandardError => e
   warn "[tcgdex_search_cards] #{e.class}: #{e.message} (query=#{query})"
   []
@@ -17,18 +24,21 @@ end
 def download_first_tcg_pokemon_image(query)
   cards = tcgdex_search_cards(query).select { |c| c['image'] }
   if cards.empty?
-    warn "[download_first_tcg_pokemon_image] no cards found for query=#{query}"
+    puts "[download_first_tcg_pokemon_image] 画像付きのカードが見つかりませんでした (query=#{query})"
     return nil
   end
 
   card       = cards.sample
   image_url  = "#{card['image']}/high.webp"
+  puts "[download_first_tcg_pokemon_image] #{card['id']} (#{card['name']}) を選択: #{image_url}"
+
   bytes, content_type = http_get_image(image_url)
   if bytes.nil?
-    warn "[download_first_tcg_pokemon_image] image download failed: #{image_url}"
+    warn "[download_first_tcg_pokemon_image] 画像のダウンロードに失敗しました: #{image_url}"
     return nil
   end
 
+  puts "[download_first_tcg_pokemon_image] 取得成功 #{bytes.bytesize} bytes (#{content_type})"
   [bytes, "pokemon_card#{extension_from_content_type(content_type)}"]
 rescue StandardError => e
   warn "[download_first_tcg_pokemon_image] #{e.class}: #{e.message} (query=#{query})"
@@ -70,7 +80,10 @@ def http_get_image(url, max_redirects: 5)
     case response
     when Net::HTTPSuccess
       content_type = response['content-type'] || ''
-      return nil unless content_type.start_with?('image/')
+      unless content_type.start_with?('image/')
+        warn "[http_get_image] 画像ではないレスポンス (content-type=#{content_type.inspect}): #{url}"
+        return nil
+      end
       return [response.body.b, content_type]
     when Net::HTTPRedirection
       uri = URI(response['location'])
@@ -79,7 +92,7 @@ def http_get_image(url, max_redirects: 5)
       return nil
     end
   end
-  warn "[http_get_image] too many redirects: #{url}"
+  warn "[http_get_image] リダイレクトが多すぎます (max=#{max_redirects}): #{url}"
   nil
 rescue StandardError => e
   warn "[http_get_image] #{e.class}: #{e.message} (url=#{url})"

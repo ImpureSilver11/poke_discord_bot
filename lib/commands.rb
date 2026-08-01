@@ -15,10 +15,13 @@ def register_commands(bot)
   bot.application_command(:pokemon_card) do |event|
     pokemon_name = event.options['query']
     event.defer(ephemeral: false)
+    puts "[pokemon_card] 実行 (query=#{pokemon_name})"
 
     result = download_first_tcg_pokemon_image(pokemon_name)
 
     if result.nil?
+      # 失敗理由は下位のレイヤーが puts/warn 済みなので、ここは応答内容だけ記録する
+      puts "[pokemon_card] 画像なしの応答を返しました (query=#{pokemon_name})"
       event.send_message(content: 'ティロンティロンティロティロロティロンティロ＞＜')
       next
     end

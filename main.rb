@@ -5,6 +5,10 @@ require_relative 'lib/pokemon_stats'
 require_relative 'lib/discord_helper'
 require_relative 'lib/commands'
 
+# fly.io / Docker では stdout がバッファリングされるため、puts を即時フラッシュする。
+# stderr (warn) は Ruby のデフォルトで sync 済み。
+$stdout.sync = true
+
 Dotenv.load
 
 TOKEN = ENV['TOKEN']

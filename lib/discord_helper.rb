@@ -31,7 +31,14 @@ def send_interaction_followup_file(application_id, token, image_bytes, filename)
   request['Content-Type'] = "multipart/form-data; boundary=#{boundary}"
   request.body = body
 
-  http.request(request)
+  response = http.request(request)
+  if response.is_a?(Net::HTTPSuccess)
+    puts "[send_interaction_followup_file] 送信成功 #{filename} (#{image_bytes.bytesize} bytes)"
+  else
+    warn "[send_interaction_followup_file] HTTP #{response.code}: #{response.body}"
+  end
+  response
 rescue StandardError => e
-  warn "followup file send failed: #{e}"
+  warn "[send_interaction_followup_file] #{e.class}: #{e.message} (filename=#{filename})"
+  nil
 end
