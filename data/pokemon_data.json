@@ -940,6 +940,58 @@
     }
   },
   {
+    "no": 26,
+    "name": "メガライチュウX",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "でんき"
+    ],
+    "abilities": [
+      "エレキメイカー"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 60,
+      "attack": 135,
+      "defence": 95,
+      "spAttack": 90,
+      "spDefence": 95,
+      "speed": 110
+    }
+  },
+  {
+    "no": 26,
+    "name": "メガライチュウY",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "でんき"
+    ],
+    "abilities": [
+      "ノーガード"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 60,
+      "attack": 100,
+      "defence": 55,
+      "spAttack": 160,
+      "spDefence": 80,
+      "speed": 130
+    }
+  },
+  {
     "no": 27,
     "name": "サンド",
     "form": "",
@@ -1261,6 +1313,33 @@
       "spAttack": 95,
       "spDefence": 90,
       "speed": 60
+    }
+  },
+  {
+    "no": 36,
+    "name": "メガピクシー",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "フェアリー",
+      "ひこう"
+    ],
+    "abilities": [
+      "マジックミラー"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 95,
+      "attack": 80,
+      "defence": 93,
+      "spAttack": 135,
+      "spDefence": 110,
+      "speed": 70
     }
   },
   {
@@ -2238,7 +2317,7 @@
       "attack": 50,
       "defence": 65,
       "spAttack": 175,
-      "spDefence": 95,
+      "spDefence": 105,
       "speed": 150
     }
   },
@@ -2401,6 +2480,33 @@
       "defence": 65,
       "spAttack": 100,
       "spDefence": 70,
+      "speed": 70
+    }
+  },
+  {
+    "no": 71,
+    "name": "メガウツボット",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "くさ",
+      "どく"
+    ],
+    "abilities": [
+      "とびだすなかみ"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 80,
+      "attack": 125,
+      "defence": 85,
+      "spAttack": 135,
+      "spDefence": 95,
       "speed": 70
     }
   },
@@ -4047,6 +4153,33 @@
     }
   },
   {
+    "no": 121,
+    "name": "メガスターミー",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "みず",
+      "エスパー"
+    ],
+    "abilities": [
+      "ちからもち"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 60,
+      "attack": 100,
+      "defence": 105,
+      "spAttack": 130,
+      "spDefence": 105,
+      "speed": 120
+    }
+  },
+  {
     "no": 122,
     "name": "バリヤード",
     "form": "",
@@ -4891,6 +5024,33 @@
     }
   },
   {
+    "no": 149,
+    "name": "メガカイリュー",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "ドラゴン",
+      "ひこう"
+    ],
+    "abilities": [
+      "マルチスケイル"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 91,
+      "attack": 124,
+      "defence": 115,
+      "spAttack": 145,
+      "spDefence": 125,
+      "speed": 100
+    }
+  },
+  {
     "no": 150,
     "name": "ミュウツー",
     "form": "",
@@ -5074,6 +5234,33 @@
     }
   },
   {
+    "no": 154,
+    "name": "メガメガニウム",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "くさ",
+      "フェアリー"
+    ],
+    "abilities": [
+      "メガソーラー"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 80,
+      "attack": 92,
+      "defence": 115,
+      "spAttack": 143,
+      "spDefence": 115,
+      "speed": 80
+    }
+  },
+  {
     "no": 155,
     "name": "ヒノアラシ",
     "form": "",
@@ -5226,6 +5413,33 @@
       "defence": 100,
       "spAttack": 79,
       "spDefence": 83,
+      "speed": 78
+    }
+  },
+  {
+    "no": 160,
+    "name": "メガオーダイル",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "みず",
+      "ドラゴン"
+    ],
+    "abilities": [
+      "ドラゴンスキン"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 85,
+      "attack": 160,
+      "defence": 125,
+      "spAttack": 89,
+      "spDefence": 93,
       "speed": 78
     }
   },
@@ -7170,6 +7384,33 @@
       "spAttack": 40,
       "spDefence": 70,
       "speed": 70
+    }
+  },
+  {
+    "no": 227,
+    "name": "メガエアームド",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "はがね",
+      "ひこう"
+    ],
+    "abilities": [
+      "すじがねいり"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 65,
+      "attack": 140,
+      "defence": 110,
+      "spAttack": 40,
+      "spDefence": 100,
+      "speed": 110
     }
   },
   {
@@ -9535,8 +9776,7 @@
 
     ],
     "types": [
-      "はがね",
-      "いわ"
+      "はがね"
     ],
     "abilities": [
       "フィルター"
@@ -11115,6 +11355,33 @@
     }
   },
   {
+    "no": 358,
+    "name": "メガチリーン",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "エスパー",
+      "はがね"
+    ],
+    "abilities": [
+      "ふゆう"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 75,
+      "attack": 50,
+      "defence": 110,
+      "spAttack": 135,
+      "spDefence": 120,
+      "speed": 65
+    }
+  },
+  {
     "no": 359,
     "name": "アブソル",
     "form": "",
@@ -11165,6 +11432,33 @@
       "spAttack": 115,
       "spDefence": 60,
       "speed": 115
+    }
+  },
+  {
+    "no": 359,
+    "name": "メガアブソルZ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "あく",
+      "ゴースト"
+    ],
+    "abilities": [
+
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 65,
+      "attack": 154,
+      "defence": 60,
+      "spAttack": 75,
+      "spDefence": 60,
+      "speed": 151
     }
   },
   {
@@ -12498,6 +12792,33 @@
       "spAttack": 50,
       "spDefence": 60,
       "speed": 100
+    }
+  },
+  {
+    "no": 398,
+    "name": "メガムクホーク",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "かくとう",
+      "ひこう"
+    ],
+    "abilities": [
+      "あまのじゃく"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 85,
+      "attack": 140,
+      "defence": 100,
+      "spAttack": 60,
+      "spDefence": 90,
+      "speed": 110
     }
   },
   {
@@ -13881,6 +14202,32 @@
     }
   },
   {
+    "no": 445,
+    "name": "メガガブリアスZ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "ドラゴン"
+    ],
+    "abilities": [
+
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 108,
+      "attack": 130,
+      "defence": 85,
+      "spAttack": 141,
+      "spDefence": 85,
+      "speed": 151
+    }
+  },
+  {
     "no": 446,
     "name": "ゴンベ",
     "form": "",
@@ -13987,6 +14334,33 @@
       "spAttack": 140,
       "spDefence": 70,
       "speed": 112
+    }
+  },
+  {
+    "no": 448,
+    "name": "メガルカリオZ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "かくとう",
+      "はがね"
+    ],
+    "abilities": [
+
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 70,
+      "attack": 100,
+      "defence": 70,
+      "spAttack": 164,
+      "spDefence": 70,
+      "speed": 151
     }
   },
   {
@@ -14858,6 +15232,33 @@
     }
   },
   {
+    "no": 478,
+    "name": "メガユキメノコ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "こおり",
+      "ゴースト"
+    ],
+    "abilities": [
+      "ゆきふらし"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 70,
+      "attack": 80,
+      "defence": 70,
+      "spAttack": 140,
+      "spDefence": 100,
+      "speed": 120
+    }
+  },
+  {
     "no": 479,
     "name": "ロトム",
     "form": "",
@@ -15179,6 +15580,33 @@
     }
   },
   {
+    "no": 485,
+    "name": "メガヒードラン",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "ほのお",
+      "はがね"
+    ],
+    "abilities": [
+
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 91,
+      "attack": 120,
+      "defence": 106,
+      "spAttack": 175,
+      "spDefence": 141,
+      "speed": 67
+    }
+  },
+  {
     "no": 486,
     "name": "レギジガス",
     "form": "",
@@ -15360,6 +15788,32 @@
       "spAttack": 135,
       "spDefence": 90,
       "speed": 125
+    }
+  },
+  {
+    "no": 491,
+    "name": "メガダークライ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "あく"
+    ],
+    "abilities": [
+
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 70,
+      "attack": 120,
+      "defence": 130,
+      "spAttack": 165,
+      "spDefence": 130,
+      "speed": 85
     }
   },
   {
@@ -15624,6 +16078,33 @@
       "spAttack": 100,
       "spDefence": 65,
       "speed": 65
+    }
+  },
+  {
+    "no": 500,
+    "name": "メガエンブオー",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "ほのお",
+      "かくとう"
+    ],
+    "abilities": [
+      "かたやぶり"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 110,
+      "attack": 148,
+      "defence": 75,
+      "spAttack": 110,
+      "spDefence": 110,
+      "speed": 75
     }
   },
   {
@@ -16435,6 +16916,33 @@
     }
   },
   {
+    "no": 530,
+    "name": "メガドリュウズ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "じめん",
+      "はがね"
+    ],
+    "abilities": [
+      "かんつうドリル"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 110,
+      "attack": 165,
+      "defence": 100,
+      "spAttack": 65,
+      "spDefence": 65,
+      "speed": 103
+    }
+  },
+  {
     "no": 531,
     "name": "タブンネ",
     "form": "",
@@ -16872,6 +17380,33 @@
       "spAttack": 55,
       "spDefence": 69,
       "speed": 112
+    }
+  },
+  {
+    "no": 545,
+    "name": "メガペンドラー",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "むし",
+      "どく"
+    ],
+    "abilities": [
+      "シェルアーマー"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 60,
+      "attack": 140,
+      "defence": 149,
+      "spAttack": 75,
+      "spDefence": 99,
+      "speed": 62
     }
   },
   {
@@ -17338,6 +17873,33 @@
       "spAttack": 45,
       "spDefence": 115,
       "speed": 58
+    }
+  },
+  {
+    "no": 560,
+    "name": "メガズルズキン",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "あく",
+      "かくとう"
+    ],
+    "abilities": [
+      "いかく"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 65,
+      "attack": 130,
+      "defence": 135,
+      "spAttack": 55,
+      "spDefence": 135,
+      "speed": 68
     }
   },
   {
@@ -18534,6 +19096,32 @@
     }
   },
   {
+    "no": 604,
+    "name": "メガシビルドン",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "でんき"
+    ],
+    "abilities": [
+      "eelevate"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 85,
+      "attack": 145,
+      "defence": 80,
+      "spAttack": 135,
+      "spDefence": 90,
+      "speed": 80
+    }
+  },
+  {
     "no": 605,
     "name": "リグレー",
     "form": "",
@@ -18669,6 +19257,33 @@
       "spAttack": 145,
       "spDefence": 90,
       "speed": 80
+    }
+  },
+  {
+    "no": 609,
+    "name": "メガシャンデラ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "ゴースト",
+      "ほのお"
+    ],
+    "abilities": [
+      "すりぬけ"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 60,
+      "attack": 75,
+      "defence": 110,
+      "spAttack": 175,
+      "spDefence": 110,
+      "speed": 90
     }
   },
   {
@@ -19048,6 +19663,33 @@
       "defence": 80,
       "spAttack": 55,
       "spDefence": 80,
+      "speed": 55
+    }
+  },
+  {
+    "no": 623,
+    "name": "メガゴルーグ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "じめん",
+      "ゴースト"
+    ],
+    "abilities": [
+      "ふかしのこぶし"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 89,
+      "attack": 159,
+      "defence": 105,
+      "spAttack": 70,
+      "spDefence": 105,
       "speed": 55
     }
   },
@@ -20027,6 +20669,33 @@
     }
   },
   {
+    "no": 652,
+    "name": "メガブリガロン",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "くさ",
+      "かくとう"
+    ],
+    "abilities": [
+      "ぼうだん"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 88,
+      "attack": 137,
+      "defence": 172,
+      "spAttack": 74,
+      "spDefence": 115,
+      "speed": 44
+    }
+  },
+  {
     "no": 653,
     "name": "フォッコ",
     "form": "",
@@ -20103,6 +20772,33 @@
       "spAttack": 114,
       "spDefence": 100,
       "speed": 104
+    }
+  },
+  {
+    "no": 655,
+    "name": "メガマフォクシー",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "ほのお",
+      "エスパー"
+    ],
+    "abilities": [
+      "ふゆう"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 75,
+      "attack": 69,
+      "defence": 72,
+      "spAttack": 159,
+      "spDefence": 125,
+      "speed": 134
     }
   },
   {
@@ -20210,6 +20906,33 @@
       "spAttack": 153,
       "spDefence": 71,
       "speed": 132
+    }
+  },
+  {
+    "no": 658,
+    "name": "メガゲッコウガ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "みず",
+      "あく"
+    ],
+    "abilities": [
+      "へんげんじざい"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 72,
+      "attack": 125,
+      "defence": 77,
+      "spAttack": 133,
+      "spDefence": 81,
+      "speed": 142
     }
   },
   {
@@ -20486,6 +21209,33 @@
     }
   },
   {
+    "no": 668,
+    "name": "メガカエンジシ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "ほのお",
+      "ノーマル"
+    ],
+    "abilities": [
+      "fire-mane"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 86,
+      "attack": 88,
+      "defence": 92,
+      "spAttack": 129,
+      "spDefence": 86,
+      "speed": 126
+    }
+  },
+  {
     "no": 669,
     "name": "フラベベ",
     "form": "",
@@ -20535,6 +21285,32 @@
       "spAttack": 75,
       "spDefence": 98,
       "speed": 52
+    }
+  },
+  {
+    "no": 670,
+    "name": "メガフラエッテ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "フェアリー"
+    ],
+    "abilities": [
+      "フェアリーオーラ"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 74,
+      "attack": 85,
+      "defence": 87,
+      "spAttack": 155,
+      "spDefence": 148,
+      "speed": 102
     }
   },
   {
@@ -20775,6 +21551,32 @@
       "spAttack": 83,
       "spDefence": 81,
       "speed": 104
+    }
+  },
+  {
+    "no": 678,
+    "name": "メガニャオニクス",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "エスパー"
+    ],
+    "abilities": [
+      "トレース"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 74,
+      "attack": 48,
+      "defence": 76,
+      "spAttack": 143,
+      "spDefence": 101,
+      "speed": 124
     }
   },
   {
@@ -21046,6 +21848,33 @@
     }
   },
   {
+    "no": 687,
+    "name": "メガカラマネロ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "あく",
+      "エスパー"
+    ],
+    "abilities": [
+      "あまのじゃく"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 86,
+      "attack": 102,
+      "defence": 88,
+      "spAttack": 98,
+      "spDefence": 120,
+      "speed": 88
+    }
+  },
+  {
     "no": 688,
     "name": "カメテテ",
     "form": "",
@@ -21102,6 +21931,33 @@
     }
   },
   {
+    "no": 689,
+    "name": "メガガメノデス",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "いわ",
+      "かくとう"
+    ],
+    "abilities": [
+      "かたいツメ"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 72,
+      "attack": 140,
+      "defence": 130,
+      "spAttack": 64,
+      "spDefence": 106,
+      "speed": 88
+    }
+  },
+  {
     "no": 690,
     "name": "クズモー",
     "form": "",
@@ -21154,6 +22010,33 @@
       "defence": 90,
       "spAttack": 97,
       "spDefence": 123,
+      "speed": 44
+    }
+  },
+  {
+    "no": 691,
+    "name": "メガドラミドロ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "どく",
+      "ドラゴン"
+    ],
+    "abilities": [
+      "さいせいりょく"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 65,
+      "attack": 85,
+      "defence": 105,
+      "spAttack": 132,
+      "spDefence": 163,
       "speed": 44
     }
   },
@@ -21424,6 +22307,33 @@
       "defence": 75,
       "spAttack": 74,
       "spDefence": 63,
+      "speed": 118
+    }
+  },
+  {
+    "no": 701,
+    "name": "メガルチャブル",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "かくとう",
+      "ひこう"
+    ],
+    "abilities": [
+      "ノーガード"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 78,
+      "attack": 137,
+      "defence": 100,
+      "spAttack": 74,
+      "spDefence": 93,
       "speed": 118
     }
   },
@@ -22117,6 +23027,33 @@
     }
   },
   {
+    "no": 718,
+    "name": "メガジガルデ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "ドラゴン",
+      "じめん"
+    ],
+    "abilities": [
+
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 216,
+      "attack": 70,
+      "defence": 91,
+      "spAttack": 216,
+      "spDefence": 85,
+      "speed": 100
+    }
+  },
+  {
     "no": 719,
     "name": "ディアンシー",
     "form": "",
@@ -22761,6 +23698,33 @@
       "spAttack": 62,
       "spDefence": 67,
       "speed": 43
+    }
+  },
+  {
+    "no": 740,
+    "name": "メガケケンカニ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "かくとう",
+      "こおり"
+    ],
+    "abilities": [
+      "てつのこぶし"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 97,
+      "attack": 157,
+      "defence": 122,
+      "spAttack": 62,
+      "spDefence": 107,
+      "speed": 33
     }
   },
   {
@@ -23688,6 +24652,33 @@
     }
   },
   {
+    "no": 768,
+    "name": "メガグソクムシャ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "むし",
+      "はがね"
+    ],
+    "abilities": [
+
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 75,
+      "attack": 150,
+      "defence": 175,
+      "spAttack": 70,
+      "spDefence": 120,
+      "speed": 40
+    }
+  },
+  {
     "no": 769,
     "name": "スナバァ",
     "form": "",
@@ -24034,6 +25025,33 @@
       "defence": 85,
       "spAttack": 135,
       "spDefence": 91,
+      "speed": 36
+    }
+  },
+  {
+    "no": 780,
+    "name": "メガジジーロン",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "ノーマル",
+      "ドラゴン"
+    ],
+    "abilities": [
+      "ぎゃくじょう"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 78,
+      "attack": 85,
+      "defence": 110,
+      "spAttack": 160,
+      "spDefence": 116,
       "speed": 36
     }
   },
@@ -24684,6 +25702,33 @@
     }
   },
   {
+    "no": 801,
+    "name": "メガマギアナ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "はがね",
+      "フェアリー"
+    ],
+    "abilities": [
+
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 80,
+      "attack": 125,
+      "defence": 115,
+      "spAttack": 170,
+      "spDefence": 115,
+      "speed": 95
+    }
+  },
+  {
     "no": 802,
     "name": "マーシャドー",
     "form": "",
@@ -24841,6 +25886,32 @@
       "spAttack": 102,
       "spDefence": 80,
       "speed": 143
+    }
+  },
+  {
+    "no": 807,
+    "name": "メガゼラオラ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "でんき"
+    ],
+    "abilities": [
+
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 88,
+      "attack": 157,
+      "defence": 75,
+      "spAttack": 147,
+      "spDefence": 80,
+      "speed": 153
     }
   },
   {
@@ -26485,6 +27556,32 @@
       "spAttack": 70,
       "spDefence": 60,
       "speed": 75
+    }
+  },
+  {
+    "no": 870,
+    "name": "メガタイレーツ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "かくとう"
+    ],
+    "abilities": [
+      "まけんき"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 65,
+      "attack": 135,
+      "defence": 135,
+      "spAttack": 70,
+      "spDefence": 65,
+      "speed": 100
     }
   },
   {
@@ -28702,6 +29799,33 @@
     }
   },
   {
+    "no": 952,
+    "name": "メガスコヴィラン",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "くさ",
+      "ほのお"
+    ],
+    "abilities": [
+      "とびだすハバネロ"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 65,
+      "attack": 138,
+      "defence": 85,
+      "spAttack": 138,
+      "spDefence": 85,
+      "speed": 75
+    }
+  },
+  {
     "no": 953,
     "name": "シガロコ",
     "form": "",
@@ -29188,6 +30312,33 @@
     }
   },
   {
+    "no": 970,
+    "name": "メガキラフロル",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "いわ",
+      "どく"
+    ],
+    "abilities": [
+      "てきおうりょく"
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 83,
+      "attack": 90,
+      "defence": 105,
+      "spAttack": 150,
+      "spDefence": 96,
+      "speed": 101
+    }
+  },
+  {
     "no": 971,
     "name": "ボチ",
     "form": "",
@@ -29400,6 +30551,33 @@
       "spAttack": 120,
       "spDefence": 95,
       "speed": 82
+    }
+  },
+  {
+    "no": 978,
+    "name": "メガシャリタツ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "ドラゴン",
+      "みず"
+    ],
+    "abilities": [
+
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 68,
+      "attack": 65,
+      "defence": 90,
+      "spAttack": 135,
+      "spDefence": 125,
+      "speed": 92
     }
   },
   {
@@ -29943,6 +31121,33 @@
       "defence": 92,
       "spAttack": 75,
       "spDefence": 86,
+      "speed": 87
+    }
+  },
+  {
+    "no": 998,
+    "name": "メガセグレイブ",
+    "form": "",
+    "isMegaEvolution": true,
+    "evolutions": [
+
+    ],
+    "types": [
+      "ドラゴン",
+      "こおり"
+    ],
+    "abilities": [
+
+    ],
+    "hiddenAbilities": [
+
+    ],
+    "stats": {
+      "hp": 115,
+      "attack": 175,
+      "defence": 117,
+      "spAttack": 105,
+      "spDefence": 101,
       "speed": 87
     }
   },

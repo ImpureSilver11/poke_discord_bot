@@ -28,6 +28,7 @@ bundle exec ruby -Ilib -Itest test/test_pokemon_image.rb
 | --- | --- |
 | `test/test_helper.rb` | HTTP 層 (`http_get_json` / `http_get_image`) をスタブに差し替える仕組みとフィクスチャ |
 | `test/test_pokemon_image.rb` | カード検索・画像選択のロジック。ネットワーク非依存で決定的 |
+| `test/test_pokemon_stats.rb` | 種族値の描画と `data/pokemon_data.json` の整合性チェック |
 | `test/test_tcgdex_live.rb` | 実 API への疎通確認。既定ではスキップし `LIVE=1` でのみ実行 |
 
 テスト中に未スタブの HTTP 呼び出しが起きると `StubHttp::NotConfigured` を投げて失敗するため、
@@ -81,3 +82,28 @@ tcgdex の `?name=` は**部分一致**検索です（`リザードン` で `リ
 振り分けは「画像を持つカードで絞り込んだ後」に行います。完全一致カードが存在しても
 画像が未整備な弾があり（例: `リザードン` の `PMCG1-021`）、先に振り分けると
 画像を出せずに失敗するためです。
+
+## 種族値データ (`data/pokemon_data.json`)
+
+取得スクリプトはどちらも PokeAPI が正典です。**種族値を手書きしないでください。**
+
+```sh
+ruby scripts/fetch_missing_pokemon.rb              # 未登録の No. を追加
+DRY_RUN=1 ruby scripts/fetch_mega_evolutions.rb    # メガシンカの差分を確認（書き込まない）
+ruby scripts/fetch_mega_evolutions.rb              # メガシンカを追加
+FIX_EXISTING=1 ruby scripts/fetch_mega_evolutions.rb  # 既存が API と食い違う場合に上書き
+```
+
+`fetch_mega_evolutions.rb` の仕様:
+
+- 並び順は `no` の安定ソート。メガは基本形の直後に入り、既存の並びは変わらない
+- 日本語名は `pokemon-form` の `form_names`（ゲーム内ローカライズ由来）を使う
+- PokeAPI は「メガリザードンＸ」のように英数を全角で返すため、**半角へ正規化**して既存表記に合わせる
+- ゲンシカイキは `form_names` が「ゲンシカイキのすがた」という汎用ラベルで種別が判別できないため、
+  種族名から `ゲンシ + 種族名` を組み立てる
+- 同名・同値のフォーム（シャリタツの3形態など）は1件に統合する
+- 既存と食い違う場合は既定では**報告のみ**。誤りを確認してから `FIX_EXISTING=1` で上書きする
+- PokeAPI 側の特性が空のときは比較対象から外す（欠落で既存の正しい値を消さないため）
+
+メガディメンション（Legends Z-A の DLC）の一部は PokeAPI に特性が未収録で
+`abilities` が空になります。表示側は「特性: 不明」にフォールバックします。
