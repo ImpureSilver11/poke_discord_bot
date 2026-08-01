@@ -5,3 +5,15 @@ img
 # flyctl launch added from .ruby-lsp/.gitignore
 .ruby-lsp/**/*
 fly.toml
+
+# テスト・CI 用のファイルは本番イメージに含めない
+test
+Rakefile
+.github
+
+# 実行に不要なものは含めない（イメージサイズ削減）
+.git
+.gitignore
+.bundle
+.claude
+.ruby-lsp

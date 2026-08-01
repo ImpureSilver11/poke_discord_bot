@@ -21,6 +21,18 @@ rescue StandardError => e
   []
 end
 
+# カード名の比較用に正規化する。前後の空白と英字の大小差を無視する。
+def normalize_card_name(name)
+  name.to_s.strip.downcase
+end
+
+# tcgdex の ?name= は部分一致検索なので、完全一致とそれ以外に分けて返す。
+#   例) query="リザードン" → 完全一致 "リザードン" / 部分一致 "リザードンex" "メガリザードンXex" など
+def partition_cards_by_match(cards, query)
+  target = normalize_card_name(query)
+  cards.partition { |c| normalize_card_name(c['name']) == target }
+end
+
 def download_first_tcg_pokemon_image(query)
   cards = tcgdex_search_cards(query).select { |c| c['image'] }
   if cards.empty?
@@ -28,9 +40,15 @@ def download_first_tcg_pokemon_image(query)
     return nil
   end
 
-  card       = cards.sample
+  exact, partial = partition_cards_by_match(cards, query)
+  puts "[download_first_tcg_pokemon_image] 完全一致 #{exact.size} 件 / 部分一致 #{partial.size} 件 (query=#{query})"
+
+  # 完全一致があればそちらを優先し、無い場合のみ部分一致にフォールバックする
+  candidates, match_type = exact.empty? ? [partial, '部分一致'] : [exact, '完全一致']
+
+  card       = candidates.sample
   image_url  = "#{card['image']}/high.webp"
-  puts "[download_first_tcg_pokemon_image] #{card['id']} (#{card['name']}) を選択: #{image_url}"
+  puts "[download_first_tcg_pokemon_image] #{match_type}から #{card['id']} (#{card['name']}) を選択: #{image_url}"
 
   bytes, content_type = http_get_image(image_url)
   if bytes.nil?

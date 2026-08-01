@@ -1,3 +1,7 @@
+# Gemfile.lock で固定した gem だけを読み込む。
+# `bundle exec` を付けずに `ruby main.rb` で起動した場合も同じ構成になる。
+require 'bundler/setup'
+
 require 'dotenv'
 require 'discordrb'
 require_relative 'lib/pokemon_image'

@@ -1,2 +1,21 @@
+# 秘密情報
 .env
+
+# 生成物
 /img
+
+# bundler のローカル設定（BUNDLE_WITHOUT 等はマシン固有なので共有しない）
+/.bundle
+
+# Claude Code のローカル設定。
+# settings.local.json は個人の権限設定なので共有しない。
+# チームで共有したい設定は .claude/settings.json に書く（こちらは追跡する）。
+.claude/settings.local.json
+
+# エディタ / 言語サーバ
+/.ruby-lsp
+/.idea
+/.vscode
+
+# macOS
+.DS_Store

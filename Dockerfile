@@ -4,6 +4,15 @@ FROM ruby:$RUBY_VERSION-slim as base
 # Rack app lives here
 WORKDIR /app
 
+# development / test グループの gem は本番イメージに入れない。
+# base に置くことで build ステージの bundle install と最終イメージの bundle exec の
+# 両方に効き、テスト用 gem 無しでも起動できる状態を保つ。
+# BUNDLE_FROZEN は Gemfile.lock を書き換えさせず、Gemfile とずれていればビルドを失敗させる。
+# （インストール先を変えてしまう BUNDLE_DEPLOYMENT は使わない。下の
+#  COPY --from=build /usr/local/bundle と衝突するため）
+ENV BUNDLE_WITHOUT="development:test" \
+    BUNDLE_FROZEN="true"
+
 # Update gems and bundler
 RUN gem update --system --no-document && \
     gem install -N bundler
