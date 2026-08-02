@@ -30,12 +30,18 @@ bundle exec ruby -Ilib -Itest test/test_pokemon_image.rb
 
 ### 常に通る状態を保つ仕組み
 
-| 仕組み | 内容 |
-| --- | --- |
-| `rake test` から live テストを除外 | 外部要因で落ちない。skip も 0 件になる |
-| pre-push フック | push 前に `rake test` を実行し、失敗したら push を中止する |
-| CI (`test.yml`) | push / PR で実行 |
-| デプロイの前提条件 | `fly-deploy.yml` が `test.yml` を `needs` するので、テストが通らないとデプロイされない |
+多重に関門を置いていますが、**最後の砦は Docker ビルド内のテストステージ**です。
+
+| 仕組み | 効く経路 | 内容 |
+| --- | --- | --- |
+| `rake test` から live テストを除外 | 全部 | 外部要因で落ちない。skip も 0 件 |
+| pre-push フック | `git push` | 失敗したら push を中止 |
+| CI (`test.yml`) | push / PR | 早く気付くための一次チェック |
+| **Docker の test ステージ** | **イメージを作る経路すべて** | **テストが落ちるとイメージが作られない = デプロイ不能** |
+
+Docker ビルドに内包しているのは、ローカルの `fly deploy` が git を経由せず
+作業ディレクトリをそのまま送るため、pre-push フックも GitHub Actions もすり抜けるからです。
+実際にこれで一度、未コミットの壊れたコードが本番に出て起動できなくなりました。
 
 pre-push フックの有効化（各自のマシンで1回だけ）:
 
@@ -44,7 +50,7 @@ bundle exec rake hooks:install    # git config core.hooksPath .githooks
 bundle exec rake hooks:uninstall  # 解除
 ```
 
-緊急時は `git push --no-verify` で飛ばせます。
+緊急時は `git push --no-verify` で飛ばせます（Docker 側の関門は残ります）。
 
 ### 構成
 
@@ -72,17 +78,38 @@ bundle exec rake hooks:uninstall  # 解除
 シグナルを汚さないためで、**結果はジョブのステータスではなくログで確認してください。**
 
 `test.yml` は `workflow_call` に対応しており、`fly-deploy.yml` がこれを `needs` します。
-つまり **テストが通らなければデプロイされません**。
+Docker ビルドでもテストは走るので二重ですが、CI 側のほうが速く失敗するため
+早期のフィードバック用として残しています。
 
 Ruby のバージョンは Dockerfile の `ARG RUBY_VERSION` と揃えています。
 片方だけ上げると本番とテスト環境がずれるため、変更時は両方直してください。
 
 ## Docker / 本番構成
 
-`Dockerfile` の base ステージで以下を設定しています。
+### ステージ構成
+
+| ステージ | 役割 |
+| --- | --- |
+| `base` | Ruby + bundler。`BUNDLE_WITHOUT` / `BUNDLE_FROZEN` を設定 |
+| `build` | 本番用 gem をビルド・インストール |
+| `test` | `build` にテスト用 gem を足して `rake test` を実行。**落ちるとビルド失敗** |
+| 最終 | `build` から gem を、コンテキストから実行に必要なファイルだけを COPY |
+
+最終ステージは `COPY --from=test /tmp/tests-passed` で `test` ステージに依存させています。
+この依存が無いと BuildKit がテストステージを丸ごとスキップするため、**消さないでください。**
+
+gem は `test` ではなく `build` から取るので、テスト用 gem は本番イメージに入りません。
+アプリのコードも `main.rb` / `lib` / `data` だけを明示的に COPY しており、
+`test/` や `Rakefile`、`scripts/` は含まれません（`scripts/` はローカル実行用のため）。
+
+### bundler の設定
 
 - `BUNDLE_WITHOUT="development:test"` … テスト用 gem を本番イメージに入れない
 - `BUNDLE_FROZEN="true"` … `Gemfile.lock` を書き換えさせず、Gemfile とずれていればビルドを失敗させる
+
+`test` ステージではテスト用 gem が要るので打ち消していますが、環境変数を空にするだけでは
+足りません。`build` の `bundle install` が `/usr/local/bundle/config` に `without` を
+永続化するため、`bundle config unset without` も必要です。
 
 そのため **Gemfile を変更したら `bundle install` して Gemfile.lock も commit** してください。
 lock が古いままだと Docker ビルドが失敗します。

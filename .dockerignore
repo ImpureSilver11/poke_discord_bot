@@ -6,12 +6,12 @@ img
 .ruby-lsp/**/*
 fly.toml
 
-# テスト・CI 用のファイルは本番イメージに含めない
-test
-Rakefile
-.github
+# test / Rakefile はビルド中の test ステージで使うので、ここでは除外しない。
+# 最終イメージには Dockerfile 側で必要なものだけを COPY しているので入らない。
 
-# 実行に不要なものは含めない（イメージサイズ削減）
+# ビルドにもテストにも不要なものは含めない
+.github
+.githooks
 .git
 .gitignore
 .bundle
