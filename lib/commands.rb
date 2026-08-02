@@ -5,14 +5,18 @@ require 'stringio'
 #   2. bot.application_command でハンドラを定義する
 #
 # ヘルプを別に手書きすると必ず実装とずれるため、COMMAND_SPECS を唯一の定義元にしている。
+#
+# description は Discord のスラッシュコマンド登録にそのまま渡すため、
+# **1〜100文字の1行**でなければ登録が拒否される。長い説明は details に書く。
+# details は @メンション時のヘルプにだけ出るので、行数・長さの制約はゆるい。
 COMMAND_SPECS = [
   {
     name: :pokemon_card,
-    description: `
-    ポケモンカードの画像を検索して表示するジュラー
-    検索は完全一致->部分一致の順で行われるジュラー(サンド -> 0件ならサンドパンもヒット)
-    見つからなかったら倒れるジュラー
-    `,
+    description: 'ポケモンカードの画像を検索して表示するジュラー',
+    details: [
+      '検索は完全一致->部分一致の順で行われるジュラー(サンド -> 0件ならサンドパンもヒット)',
+      '見つからなかったら倒れるジュラー',
+    ],
     options: [
       { type: :string, name: 'query', description: '検索ワード（ポケモン名・トレーナー名など）', required: true },
     ],
@@ -20,10 +24,10 @@ COMMAND_SPECS = [
   },
   {
     name: :pokemon_stats,
-    description: `
-    ポケモンの種族値を表示するジュラー
-    メガシンカポケモンも表示できるジュラー
-    `,
+    description: 'ポケモンの種族値を表示するジュラー',
+    details: [
+      'メガシンカポケモンも表示できるジュラー',
+    ],
     options: [
       { type: :string, name: 'pokemon_name', description: 'ポケモン名', required: true },
     ],
@@ -31,11 +35,15 @@ COMMAND_SPECS = [
   },
 ].freeze
 
+# Discord のスラッシュコマンド description の制約（1〜100文字）
+COMMAND_DESCRIPTION_MAX = 100
+
 # @メンションされたときに返すヘルプ本文を組み立てる。
 # Discord のメッセージ上限は 2000 文字なので、超える場合は打ち切る。
 def help_message(specs = COMMAND_SPECS)
   body = specs.map do |spec|
     lines = ["**/#{spec[:name]}** — #{spec[:description]}"]
+    spec[:details].to_a.each { |line| lines << "　#{line}" }
     spec[:options].to_a.each do |opt|
       required = opt[:required] ? '必須' : '任意'
       lines << "　`#{opt[:name]}`（#{required}）: #{opt[:description]}"

@@ -6,6 +6,11 @@ on:
       - main
   pull_request:
   workflow_dispatch:
+  # 週1回、外部APIへの疎通テストを回して tcgdex 側の変化を拾う
+  schedule:
+    - cron: '0 0 * * 1'
+  # fly-deploy.yml から呼び出してデプロイの前提条件にする
+  workflow_call:
 
 jobs:
   test:
@@ -20,11 +25,13 @@ jobs:
           ruby-version: '3.3.0'
           bundler-cache: true
 
-      # 外部APIに接続しないテスト。ここが落ちたら失敗させる。
+      # 外部APIに接続しないテスト。skip 0 件で全部通ることを担保する。
       - run: bundle exec rake test
 
   # tcgdex API の仕様変更・障害を検知するための疎通テスト。
-  # 外部サービス依存で不安定になりうるため、PR はブロックしない。
+  # 外部サービス依存で落ちうるので continue-on-error にして、
+  # 「テストは常に全部通る」というシグナルを外部要因で汚さないようにしている。
+  # 落ちたかどうかはこのジョブのログで確認する。
   live:
     name: rake test_live (外部API)
     runs-on: ubuntu-latest

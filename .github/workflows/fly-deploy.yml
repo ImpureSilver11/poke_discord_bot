@@ -6,8 +6,13 @@ on:
     branches:
       - main
 jobs:
+  # テストが通らない限りデプロイしない（test.yml を再利用）
+  test:
+    uses: ./.github/workflows/test.yml
+
   deploy:
     name: Deploy app
+    needs: test
     runs-on: ubuntu-latest
     concurrency: deploy-group    # optional: ensure only one action runs at a time
     steps:

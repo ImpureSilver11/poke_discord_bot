@@ -55,6 +55,61 @@ class FakeMentionEvent
   end
 end
 
+# COMMAND_SPECS が Discord の制約を満たしているか。
+# ここが崩れると起動時にコマンド登録が拒否されるため、実行前に落としたい。
+class TestCommandSpecsValidity < PokeTestCase
+  def test_description_が空でない
+    COMMAND_SPECS.each do |spec|
+      refute_nil   spec[:description],                    "#{spec[:name]} の description が nil"
+      refute_empty spec[:description].to_s.strip,         "#{spec[:name]} の description が空"
+    end
+  end
+
+  # description は文字列でなければならない。
+  # バッククォート（`...`）で書くとシェルが実行されて空文字列になり、
+  # Discord の「1文字以上」制約に引っかかって登録が拒否される。
+  def test_description_が文字列である
+    COMMAND_SPECS.each { |spec| assert_kind_of String, spec[:description], "#{spec[:name]} の description が文字列でない" }
+  end
+
+  def test_description_が100文字以内
+    COMMAND_SPECS.each do |spec|
+      assert_operator spec[:description].length, :<=, COMMAND_DESCRIPTION_MAX,
+                      "#{spec[:name]} の description が #{COMMAND_DESCRIPTION_MAX} 文字を超えている（長い説明は details へ）"
+    end
+  end
+
+  def test_description_に改行を含まない
+    COMMAND_SPECS.each do |spec|
+      refute_includes spec[:description], "\n",
+                      "#{spec[:name]} の description に改行がある（複数行は details へ）"
+    end
+  end
+
+  def test_オプションの説明も同じ制約を満たす
+    COMMAND_SPECS.flat_map { |s| s[:options].to_a }.each do |opt|
+      assert_kind_of String, opt[:description]
+      refute_empty    opt[:description].to_s.strip
+      assert_operator opt[:description].length, :<=, COMMAND_DESCRIPTION_MAX
+      refute_includes opt[:description], "\n"
+    end
+  end
+
+  def test_コマンド名が重複しない
+    names = COMMAND_SPECS.map { |s| s[:name] }
+    assert_equal names.uniq, names
+  end
+
+  def test_details_は文字列の配列
+    COMMAND_SPECS.each do |spec|
+      next unless spec.key?(:details)
+
+      assert_kind_of Array, spec[:details], "#{spec[:name]} の details が配列でない"
+      spec[:details].each { |line| assert_kind_of String, line, "#{spec[:name]} の details に文字列以外がある" }
+    end
+  end
+end
+
 # スラッシュコマンドの登録
 class TestRegisterCommands < PokeTestCase
   def setup
@@ -167,8 +222,28 @@ class TestHelpMessage < PokeTestCase
     assert_includes text, '`b`（任意）: B'
   end
 
+  # 例文そのものを書き下すと COMMAND_SPECS を編集しただけでテストが落ちるので、
+  # 定義から導出して「載っていること」だけを検証する
   def test_例があれば載せる
-    assert_includes help_message, '例: `/pokemon_card query:ピカチュウ`'
+    text = help_message
+    COMMAND_SPECS.each do |spec|
+      next unless spec[:example]
+
+      assert_includes text, "例: `#{spec[:example]}`", "#{spec[:name]} の例がヘルプに載っていない"
+    end
+  end
+
+  def test_details_の全行を載せる
+    text = help_message
+    COMMAND_SPECS.flat_map { |s| s[:details].to_a }.each do |line|
+      assert_includes text, line
+    end
+  end
+
+  def test_details_が無くても落ちない
+    text = help_message([{ name: :nodetail, description: 'せつめい', options: [] }])
+
+    assert_includes text, '**/nodetail** — せつめい'
   end
 
   def test_例が無くても落ちない

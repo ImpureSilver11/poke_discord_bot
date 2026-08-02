@@ -11,16 +11,40 @@ gem は Gemfile / Gemfile.lock で管理します。`rake` と `minitest` は
 
 ## テスト
 
+**`rake test` は skip 0 件で常に全部通る状態を保ちます。** 落ちたら壊れている合図です。
+
 ```sh
-bundle exec rake test        # 既定。外部APIには接続しない
-bundle exec rake test_live   # 実際の tcgdex API への疎通も含めて実行
+bundle exec rake test        # 既定。外部APIに接続しない（skip 0 件）
+bundle exec rake test_live   # 実 tcgdex API への疎通テストのみ
+bundle exec rake test_all    # 上記の両方
 ```
+
+外部APIに接続するテストは `test/test_*_live.rb` に分け、`rake test` の対象から
+除外しています。ネットワーク障害や相手側の仕様変更で既定のテストが落ちないようにするためです。
 
 個別のファイルだけ実行する場合:
 
 ```sh
 bundle exec ruby -Ilib -Itest test/test_pokemon_image.rb
 ```
+
+### 常に通る状態を保つ仕組み
+
+| 仕組み | 内容 |
+| --- | --- |
+| `rake test` から live テストを除外 | 外部要因で落ちない。skip も 0 件になる |
+| pre-push フック | push 前に `rake test` を実行し、失敗したら push を中止する |
+| CI (`test.yml`) | push / PR で実行 |
+| デプロイの前提条件 | `fly-deploy.yml` が `test.yml` を `needs` するので、テストが通らないとデプロイされない |
+
+pre-push フックの有効化（各自のマシンで1回だけ）:
+
+```sh
+bundle exec rake hooks:install    # git config core.hooksPath .githooks
+bundle exec rake hooks:uninstall  # 解除
+```
+
+緊急時は `git push --no-verify` で飛ばせます。
 
 ### 構成
 
@@ -30,7 +54,7 @@ bundle exec ruby -Ilib -Itest test/test_pokemon_image.rb
 | `test/test_commands.rb` | コマンド登録・@メンション時のヘルプ。代用 Bot で Discord に繋がず検証 |
 | `test/test_pokemon_image.rb` | カード検索・画像選択のロジック。ネットワーク非依存で決定的 |
 | `test/test_pokemon_stats.rb` | 種族値の描画と `data/pokemon_data.json` の整合性チェック |
-| `test/test_tcgdex_live.rb` | 実 API への疎通確認。既定ではスキップし `LIVE=1` でのみ実行 |
+| `test/test_tcgdex_live.rb` | 実 API への疎通確認。`rake test` の対象外（`rake test_live` で実行） |
 
 テスト中に未スタブの HTTP 呼び出しが起きると `StubHttp::NotConfigured` を投げて失敗するため、
 意図しない外部アクセスが混入しないようになっています。
@@ -41,15 +65,17 @@ bundle exec ruby -Ilib -Itest test/test_pokemon_image.rb
 
 | ジョブ | 実行契機 | 内容 |
 | --- | --- | --- |
-| `test` | push (main) / PR / 手動 | `bundle exec rake test`。外部APIに繋がないので安定して落とせる |
-| `live` | 手動のみ | `bundle exec rake test_live`。tcgdex の仕様変更・障害の検知用。`continue-on-error` で PR はブロックしない |
+| `test` | push (main) / PR / 手動 / `fly-deploy` からの呼び出し | `bundle exec rake test`。外部APIに繋がないので安定して落とせる |
+| `live` | 手動 / 毎週月曜 | `bundle exec rake test_live`。tcgdex の仕様変更・障害の検知用 |
+
+`live` は `continue-on-error: true` です。外部要因の失敗で「テストは常に全部通る」という
+シグナルを汚さないためで、**結果はジョブのステータスではなくログで確認してください。**
+
+`test.yml` は `workflow_call` に対応しており、`fly-deploy.yml` がこれを `needs` します。
+つまり **テストが通らなければデプロイされません**。
 
 Ruby のバージョンは Dockerfile の `ARG RUBY_VERSION` と揃えています。
 片方だけ上げると本番とテスト環境がずれるため、変更時は両方直してください。
-
-デプロイ (`.github/workflows/fly-deploy.yml`) は現在テストの成否と独立して
-main への push で走ります。テストを通してからデプロイしたい場合は、deploy ジョブに
-`needs: test` 相当の依存を入れてください。
 
 ## Docker / 本番構成
 
