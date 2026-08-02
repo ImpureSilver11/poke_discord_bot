@@ -27,6 +27,7 @@ bundle exec ruby -Ilib -Itest test/test_pokemon_image.rb
 | ファイル | 内容 |
 | --- | --- |
 | `test/test_helper.rb` | HTTP 層 (`http_get_json` / `http_get_image`) をスタブに差し替える仕組みとフィクスチャ |
+| `test/test_commands.rb` | コマンド登録・@メンション時のヘルプ。代用 Bot で Discord に繋がず検証 |
 | `test/test_pokemon_image.rb` | カード検索・画像選択のロジック。ネットワーク非依存で決定的 |
 | `test/test_pokemon_stats.rb` | 種族値の描画と `data/pokemon_data.json` の整合性チェック |
 | `test/test_tcgdex_live.rb` | 実 API への疎通確認。既定ではスキップし `LIVE=1` でのみ実行 |
@@ -62,6 +63,28 @@ lock が古いままだと Docker ビルドが失敗します。
 
 `Gemfile.lock` の `PLATFORMS` には Linux (`x86_64-linux` / `aarch64-linux`) を追加済みです。
 追加していないと Linux 上の frozen ビルドで解決に失敗します。
+
+## コマンドとヘルプ
+
+コマンドの定義は `lib/commands.rb` の `COMMAND_SPECS` が唯一の定義元です。
+スラッシュコマンドの登録と、@メンション時に返すヘルプ本文の両方をここから生成します。
+
+**新しいコマンドを追加する手順:**
+
+1. `COMMAND_SPECS` に定義（`name` / `description` / `options` / `example`）を足す
+2. `bot.application_command(:name) do |event| ... end` でハンドラを書く
+
+ヘルプは自動で追従するので手を入れる必要はありません。逆にヘルプを別に手書きすると
+必ず実装とずれるため、`COMMAND_SPECS` 以外に説明文を置かないでください。
+`test/test_commands.rb` が「全コマンドがヘルプに載っていること」を検証しています。
+
+**@メンションについて:**
+
+- `bot.mention` は payload の `mentions` 配列で発火します。`mentions` は
+  MESSAGE_CONTENT（特権 intent）の制限対象外なので、**intent の追加設定は不要**です
+  （discordrb 3.5.0 はそもそも `message_content` intent に対応していません）
+- 他の bot からのメンションは無視します（相互に反応し合うループを防ぐため）
+- 自分自身のメッセージは discordrb 側で除外されます
 
 ## ログの方針
 

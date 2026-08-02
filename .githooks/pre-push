@@ -1,0 +1,22 @@
+#!/bin/sh
+# push 前にオフラインテストを実行する。失敗したら push を中止する。
+#
+# 有効化: rake hooks:install   （git config core.hooksPath .githooks）
+# 解除  : rake hooks:uninstall
+#
+# 一時的に飛ばしたいときは git push --no-verify
+#
+# 外部APIに接続する rake test_live は含めない。ネットワーク障害や
+# 相手側の仕様変更で push できなくなるのを避けるため。
+set -e
+
+echo "[pre-push] bundle exec rake test を実行します..."
+
+if ! bundle exec rake test; then
+  echo ""
+  echo "[pre-push] テストが失敗したため push を中止しました。"
+  echo "[pre-push] 意図的に push する場合は git push --no-verify"
+  exit 1
+fi
+
+echo "[pre-push] テストが通りました。push を続行します。"
