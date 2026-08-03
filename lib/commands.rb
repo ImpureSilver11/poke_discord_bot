@@ -27,6 +27,7 @@ COMMAND_SPECS = [
     description: 'ポケモンの種族値を表示するジュラー',
     details: [
       'メガシンカポケモンも表示できるジュラー',
+      '下のメッセージ欄に入力するジュラー',
     ],
     options: [
       { type: :string, name: 'pokemon_name', description: 'ポケモン名', required: true },
