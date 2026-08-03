@@ -6,6 +6,7 @@ require 'dotenv'
 require 'discordrb'
 require_relative 'lib/pokemon_image'
 require_relative 'lib/pokemon_stats'
+require_relative 'lib/pokemon_release'
 require_relative 'lib/discord_helper'
 require_relative 'lib/commands'
 

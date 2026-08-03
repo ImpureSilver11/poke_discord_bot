@@ -60,7 +60,9 @@ bundle exec rake hooks:uninstall  # 解除
 | `test/test_commands.rb` | コマンド登録・@メンション時のヘルプ。代用 Bot で Discord に繋がず検証 |
 | `test/test_pokemon_image.rb` | カード検索・画像選択のロジック。ネットワーク非依存で決定的 |
 | `test/test_pokemon_stats.rb` | 種族値の描画と `data/pokemon_data.json` の整合性チェック |
+| `test/test_pokemon_release.rb` | 発売予定の日付パース・絞り込み・本文組み立て。ネットワーク非依存 |
 | `test/test_tcgdex_live.rb` | 実 API への疎通確認。`rake test` の対象外（`rake test_live` で実行） |
+| `test/test_pokemon_release_live.rb` | ポケカ公式の商品情報APIへの疎通確認。同上 |
 
 テスト中に未スタブの HTTP 呼び出しが起きると `StubHttp::NotConfigured` を投げて失敗するため、
 意図しない外部アクセスが混入しないようになっています。
@@ -72,7 +74,7 @@ bundle exec rake hooks:uninstall  # 解除
 | ジョブ | 実行契機 | 内容 |
 | --- | --- | --- |
 | `test` | push (main) / PR / 手動 / `fly-deploy` からの呼び出し | `bundle exec rake test`。外部APIに繋がないので安定して落とせる |
-| `live` | 手動 / 毎週月曜 | `bundle exec rake test_live`。tcgdex の仕様変更・障害の検知用 |
+| `live` | 手動 / 毎週月曜 | `bundle exec rake test_live`。tcgdex とポケカ公式APIの仕様変更・障害の検知用 |
 
 `live` は `continue-on-error: true` です。外部要因の失敗で「テストは常に全部通る」という
 シグナルを汚さないためで、**結果はジョブのステータスではなくログで確認してください。**
@@ -138,6 +140,24 @@ lock が古いままだと Docker ビルドが失敗します。
   （discordrb 3.5.0 はそもそも `message_content` intent に対応していません）
 - 他の bot からのメンションは無視します（相互に反応し合うループを防ぐため）
 - 自分自身のメッセージは discordrb 側で除外されます
+
+## 外部データソース
+
+| 用途 | 取得先 | 備考 |
+| --- | --- | --- |
+| カード画像・カード情報 | [tcgdex](https://tcgdex.dev/) `api.tcgdex.net/v2/ja` | 公開API。ただし新弾の反映は遅い |
+| 発売予定日 | ポケカ公式 `www.pokemon-card.com/products/resultAPI.php` | **非公式**。商品情報ページが裏で叩いている JSON |
+
+発売予定日にポケカ公式を使っているのは、tcgdex の `releaseDate` が実用にならないためです。
+更新が遅く、発売済みの直近弾すら入っていないことがあり、未発売の弾は当然載りません。
+
+`resultAPI.php` はドキュメント化されていないエンドポイントなので、次の点に注意してください。
+
+- 予告なく壊れる。壊れたことは `rake test_live`（CI の `live` ジョブ）で気付く想定です
+- 発売日は `"2026年 9月16日（水）"` という**表示用の日本語文字列**で返る。
+  月が1桁だと桁揃えの半角スペースが入るため、`parse_japanese_release_date` で吸収しています
+- 公式サイトには画像等の無断転載禁止の記載があるため、Bot が出すのは
+  **発売日・商品名・価格・公式ページへのリンク**だけにとどめ、画像は転載していません
 
 ## ログの方針
 

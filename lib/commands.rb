@@ -1,5 +1,8 @@
 require 'stringio'
 
+# details の文面を RELEASE_* 定数から組み立てるため、COMMAND_SPECS の評価時点で必要になる
+require_relative 'pokemon_release'
+
 # 新しいスラッシュコマンドを追加する場合:
 #   1. COMMAND_SPECS に定義を足す（登録と @メンション時のヘルプは両方ここから生成される）
 #   2. bot.application_command でハンドラを定義する
@@ -33,6 +36,17 @@ COMMAND_SPECS = [
       { type: :string, name: 'pokemon_name', description: 'ポケモン名', required: true },
     ],
     example: '/pokemon_stats pokemon_name:メガリザードンX',
+  },
+  {
+    name: :pokemon_release,
+    description: 'これから発売されるポケモンカード商品の発売日とリンクを表示するジュラー',
+    details: [
+      "今日から#{RELEASE_LOOKAHEAD_MONTHS}ヶ月先までの発売予定を、発売日の早い順に最大#{RELEASE_MAX_ITEMS}件出すジュラー",
+      '拡張パック・構築デッキ・グッズまで全部が対象ジュラー',
+      '公式サイトの商品情報から取ってくるので、発売日が未発表の弾は出てこないジュラー',
+    ],
+    options: [],
+    example: '/pokemon_release',
   },
 ].freeze
 
@@ -133,5 +147,18 @@ def register_commands(bot)
     end
 
     event.respond(content: matches.map { |p| format_stats(p) }.join("\n\n"))
+  end
+
+  # ----------------------------------------
+  # /pokemon_release
+  # ----------------------------------------
+  bot.application_command(:pokemon_release) do |event|
+    # 公式サイトへの問い合わせが Discord の応答期限（3秒）に間に合わない可能性があるため defer する
+    event.defer(ephemeral: false)
+    puts '[pokemon_release] 実行'
+
+    products = fetch_upcoming_products
+    puts "[pokemon_release] #{products.nil? ? '取得失敗' : "#{products.size} 件"}の応答を返しました"
+    event.send_message(content: format_upcoming_products(products))
   end
 end
