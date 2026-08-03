@@ -69,11 +69,11 @@ def help_message(specs = COMMAND_SPECS)
 
   text = <<~HELP
     **ポケモンBot の使い方**
-    以下のスラッシュコマンドが使えます。
+    以下のスラッシュコマンドが使えるジュラー
 
     #{body.join("\n\n")}
 
-    このヘルプは @メンション で表示できます。
+    このヘルプは @メンション で表示するジュラー。スラッシュコマンドの詳細は Discord の入力補完で確認できるジュラー。
   HELP
 
   text = "#{text[0, 1_997]}..." if text.length > 2_000
