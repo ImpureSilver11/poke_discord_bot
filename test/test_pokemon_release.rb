@@ -63,25 +63,25 @@ class TestParseJapaneseReleaseDate < PokeReleaseTestCase
   end
 end
 
-# link_detailPage は相対パスのことも別ドメインの絶対URLのこともある
-class TestAbsoluteProductUrl < PokeReleaseTestCase
+# link_detailPage やカード画像のパスは、相対パスのことも別ドメインの絶対URLのこともある
+class TestAbsolutePokemonCardUrl < PokeReleaseTestCase
   def test_相対パスは公式サイトのURLにする
-    assert_equal 'https://www.pokemon-card.com/ex/m6/', absolute_product_url('/ex/m6/')
+    assert_equal 'https://www.pokemon-card.com/ex/m6/', absolute_pokemon_card_url('/ex/m6/')
   end
 
   def test_先頭のスラッシュが無くても繋げる
-    assert_equal 'https://www.pokemon-card.com/ex/m6/', absolute_product_url('ex/m6/')
+    assert_equal 'https://www.pokemon-card.com/ex/m6/', absolute_pokemon_card_url('ex/m6/')
   end
 
   def test_絶対URLはそのまま使う
     url = 'https://www.30th.pokemon-card.com/product/m6a'
-    assert_equal url, absolute_product_url(url)
+    assert_equal url, absolute_pokemon_card_url(url)
   end
 
   def test_空なら_nil
-    assert_nil absolute_product_url('')
-    assert_nil absolute_product_url('  ')
-    assert_nil absolute_product_url(nil)
+    assert_nil absolute_pokemon_card_url('')
+    assert_nil absolute_pokemon_card_url('  ')
+    assert_nil absolute_pokemon_card_url(nil)
   end
 end
 
@@ -184,6 +184,15 @@ class TestFetchUpcomingProducts < PokeReleaseTestCase
   # nil（取得失敗）と []（予定なし）は表示を出し分けるので、混同しないこと
   def test_APIがエラーを返したら_nil
     assert_nil fetch([], result: 0)
+  end
+
+  # エラー応答に products が含まれる保証は無い。products の検査を先にすると
+  # errMsg を取り落とすので、result を先に見ていることを固定する。
+  def test_products_が無いエラー応答でも_errMsg_を記録する
+    StubHttp.json_handler = ->(_url) { { 'result' => 0, 'errMsg' => 'なにかおかしい' } }
+    _out, err = capture_io { fetch_upcoming_products(today: TODAY) }
+
+    assert_includes err, 'なにかおかしい', 'errMsg が記録されていない'
   end
 
   def test_想定外のレスポンスなら_nil

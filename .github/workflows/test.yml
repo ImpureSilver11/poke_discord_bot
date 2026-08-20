@@ -6,7 +6,7 @@ on:
       - main
   pull_request:
   workflow_dispatch:
-  # 週1回、外部APIへの疎通テストを回して tcgdex 側の変化を拾う
+  # 週1回、外部APIへの疎通テストを回してポケカ公式側の変化を拾う
   schedule:
     - cron: '0 0 * * 1'
   # fly-deploy.yml から呼び出してデプロイの前提条件にする
@@ -28,10 +28,12 @@ jobs:
       # 外部APIに接続しないテスト。skip 0 件で全部通ることを担保する。
       - run: bundle exec rake test
 
-  # tcgdex API の仕様変更・障害を検知するための疎通テスト。
+  # ポケカ公式の非公開エンドポイント（card-search / products の resultAPI.php）の
+  # 仕様変更・障害を検知するための疎通テスト。
   # 外部サービス依存で落ちうるので continue-on-error にして、
   # 「テストは常に全部通る」というシグナルを外部要因で汚さないようにしている。
   # 落ちたかどうかはこのジョブのログで確認する。
+  # 切り分け手順は .claude/skills/diagnose-card-api/ にある。
   live:
     name: rake test_live (外部API)
     runs-on: ubuntu-latest

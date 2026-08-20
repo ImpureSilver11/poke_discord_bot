@@ -1,13 +1,14 @@
 require 'date'
 require 'uri'
 
+require_relative 'pokemon_card_site'
+
 # ポケモンカード公式サイトの商品情報ページ（/products/）が裏で叩いている JSON を使う。
 # 公開APIとして案内されているものではないため、いつ壊れてもおかしくない前提で書く。
 #
-# 他の候補と比較した結果ここに落ち着いた:
+# 他の候補は使えない:
 #   tcgdex … releaseDate は持つが更新が遅く、未発売どころか発売済みの直近弾すら入っていない
 #   pokemontcg.io … 英語版セットのみで日本の発売日は扱わない
-POKEMON_CARD_SITE          = 'https://www.pokemon-card.com'.freeze
 POKEMON_CARD_PRODUCTS_API  = "#{POKEMON_CARD_SITE}/products/resultAPI.php".freeze
 POKEMON_CARD_PRODUCTS_PAGE = "#{POKEMON_CARD_SITE}/products/".freeze
 
@@ -49,16 +50,6 @@ rescue Date::Error
   nil
 end
 
-# link_detailPage は "/ex/m6/" のような相対パスのことも、別ドメインの絶対URLのこともある。
-# どちらも無ければ商品情報ページそのものへ逃がす。
-def absolute_product_url(path)
-  stripped = path.to_s.strip
-  return nil if stripped.empty?
-  return stripped if stripped.start_with?('http://', 'https://')
-
-  "#{POKEMON_CARD_SITE}#{stripped.start_with?('/') ? stripped : "/#{stripped}"}"
-end
-
 # Discord のマスクリンク [表示名](URL) を壊さないように、角括弧だけ潰す
 def escape_link_text(text)
   text.to_s.tr('[]', '［］')
@@ -70,13 +61,22 @@ def fetch_upcoming_products(today: Date.today, months: RELEASE_LOOKAHEAD_MONTHS)
   url  = products_api_url(from: today, to: today >> months)
   body = http_get_json(url)
 
-  unless body.is_a?(Hash) && body['products'].is_a?(Array)
-    warn "[fetch_upcoming_products] 想定外のレスポンスです (url=#{url})"
+  unless body.is_a?(Hash)
+    # nil は HTTP エラーや例外（http_get_json 側でも warn 済み）。
+    # どの問い合わせで失敗したかをこの層でも残しておく。
+    warn "[fetch_upcoming_products] レスポンスを取得できませんでした (url=#{url})"
     return nil
   end
 
+  # エラー応答に products が含まれる保証は無いので、products より先に result を見る。
+  # 順序を逆にすると errMsg を取り落として「形が違う」に丸めてしまい、原因が分からなくなる。
   if body['result'].to_i != 1
     warn "[fetch_upcoming_products] API がエラーを返しました (result=#{body['result']}, errMsg=#{body['errMsg']})"
+    return nil
+  end
+
+  unless body['products'].is_a?(Array)
+    warn "[fetch_upcoming_products] products がありません (url=#{url})"
     return nil
   end
 
@@ -107,7 +107,9 @@ def build_product(raw, today: Date.today)
     title:        raw['productTitle'].to_s.strip,
     type:         raw['productType'].to_s.strip,
     price:        raw['priceTxt'].to_s.strip,
-    url:          absolute_product_url(raw['link_detailPage']) || POKEMON_CARD_PRODUCTS_PAGE,
+    # link_detailPage は相対パスのことも別ドメインの絶対URLのこともある。
+    # どちらも無ければ商品情報ページそのものへ逃がす。
+    url:          absolute_pokemon_card_url(raw['link_detailPage']) || POKEMON_CARD_PRODUCTS_PAGE,
   }
 end
 

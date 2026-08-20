@@ -51,7 +51,10 @@ def http_get_image(url, max_redirects: 5)
 end
 
 class PokeTestCase < Minitest::Test
-  IMAGE_HOST = 'https://assets.tcgdex.net/ja/X'.freeze
+  # 公式のカード画像はこの形のパスで返る:
+  #   /assets/images/card_images/large/MC/050034_P_MRIZADONYEX.jpg
+  # テストでは弾のディレクトリを X に固定して、末尾から cardID を取り出せるようにする。
+  IMAGE_DIR = '/assets/images/card_images/large/X'.freeze
 
   def setup
     StubHttp.reset!
@@ -61,23 +64,43 @@ class PokeTestCase < Minitest::Test
     StubHttp.reset!
   end
 
-  # tcgdex のカード1件分のレスポンス形状を模した Hash を作る。
+  # 公式のカード検索APIが返すカード1件分のレスポンス形状を模した Hash を作る。
   # image: false は「API にカードは存在するが画像が未整備」なケース（旧弾に多い）。
   def card(id, name, image: true)
-    h = { 'id' => id, 'name' => name }
-    h['image'] = "#{IMAGE_HOST}/#{id}" if image
+    h = { 'cardID' => id, 'cardNameAltText' => name, 'cardNameViewText' => name }
+    h['cardThumbFile'] = "#{IMAGE_DIR}/#{id}.jpg" if image
     h
   end
 
-  # 検索 API が cards を返し、画像取得は URL が分かる形のダミーバイト列を返すようにする
-  def stub_search(cards, content_type: 'image/webp')
-    StubHttp.json_handler  = ->(_url) { cards }
+  # 検索APIの1ページ分のレスポンスを組み立てる
+  def search_response(cards, page: 1, max_page: 1)
+    {
+      'result' => 1, 'errMsg' => '', 'thisPage' => page, 'maxPage' => max_page,
+      'hitCnt' => cards.size, 'cardStart' => 1, 'cardEnd' => cards.size,
+      'searchCondition' => ['キーワード：テスト', 'レギュレーション：すべてのカード'],
+      'regulation' => 'all', 'cardList' => cards
+    }
+  end
+
+  # 1ページで収まる検索結果を返し、画像取得は URL が分かる形のダミーバイト列を返すようにする
+  def stub_search(cards, content_type: 'image/jpeg')
+    stub_search_pages([cards], content_type: content_type)
+  end
+
+  # 複数ページの検索結果を返す。pages は「ページごとのカード配列」の配列。
+  # maxPage を超える page を投げられたら、本物と同じく最終ページを返す。
+  def stub_search_pages(pages, content_type: 'image/jpeg')
+    StubHttp.json_handler = lambda do |url|
+      requested = URI.decode_www_form(URI(url).query).to_h['page'].to_i
+      page      = requested.clamp(1, pages.size)
+      search_response(pages[page - 1], page: page, max_page: pages.size)
+    end
     StubHttp.image_handler = ->(url) { ["BYTES:#{url}", content_type] }
   end
 
   # 返却されたバイト列から、どのカードが選ばれたかを取り出す
   def picked_id(bytes)
-    bytes.to_s[%r{#{Regexp.escape(IMAGE_HOST)}/([^/]+)/}, 1]
+    bytes.to_s[%r{#{Regexp.escape(IMAGE_DIR)}/(.+)\.jpg\z}, 1]
   end
 
   # ログ出力を捨てて実行する（各テストで明示的に検証する場合以外）

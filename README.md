@@ -15,7 +15,7 @@ gem は Gemfile / Gemfile.lock で管理します。`rake` と `minitest` は
 
 ```sh
 bundle exec rake test        # 既定。外部APIに接続しない（skip 0 件）
-bundle exec rake test_live   # 実 tcgdex API への疎通テストのみ
+bundle exec rake test_live   # ポケカ公式APIへの疎通テストのみ
 bundle exec rake test_all    # 上記の両方
 ```
 
@@ -61,7 +61,7 @@ bundle exec rake hooks:uninstall  # 解除
 | `test/test_pokemon_image.rb` | カード検索・画像選択のロジック。ネットワーク非依存で決定的 |
 | `test/test_pokemon_stats.rb` | 種族値の描画と `data/pokemon_data.json` の整合性チェック |
 | `test/test_pokemon_release.rb` | 発売予定の日付パース・絞り込み・本文組み立て。ネットワーク非依存 |
-| `test/test_tcgdex_live.rb` | 実 API への疎通確認。`rake test` の対象外（`rake test_live` で実行） |
+| `test/test_pokemon_card_search_live.rb` | ポケカ公式のカード検索APIへの疎通確認。`rake test` の対象外（`rake test_live` で実行） |
 | `test/test_pokemon_release_live.rb` | ポケカ公式の商品情報APIへの疎通確認。同上 |
 
 テスト中に未スタブの HTTP 呼び出しが起きると `StubHttp::NotConfigured` を投げて失敗するため、
@@ -74,7 +74,7 @@ bundle exec rake hooks:uninstall  # 解除
 | ジョブ | 実行契機 | 内容 |
 | --- | --- | --- |
 | `test` | push (main) / PR / 手動 / `fly-deploy` からの呼び出し | `bundle exec rake test`。外部APIに繋がないので安定して落とせる |
-| `live` | 手動 / 毎週月曜 | `bundle exec rake test_live`。tcgdex とポケカ公式APIの仕様変更・障害の検知用 |
+| `live` | 手動 / 毎週月曜 | `bundle exec rake test_live`。ポケカ公式APIの仕様変更・障害の検知用 |
 
 `live` は `continue-on-error: true` です。外部要因の失敗で「テストは常に全部通る」という
 シグナルを汚さないためで、**結果はジョブのステータスではなくログで確認してください。**
@@ -145,19 +145,33 @@ lock が古いままだと Docker ビルドが失敗します。
 
 | 用途 | 取得先 | 備考 |
 | --- | --- | --- |
-| カード画像・カード情報 | [tcgdex](https://tcgdex.dev/) `api.tcgdex.net/v2/ja` | 公開API。ただし新弾の反映は遅い |
+| カード画像・カード情報 | ポケカ公式 `www.pokemon-card.com/card-search/resultAPI.php` | **非公式**。カード検索ページが裏で叩いている JSON |
 | 発売予定日 | ポケカ公式 `www.pokemon-card.com/products/resultAPI.php` | **非公式**。商品情報ページが裏で叩いている JSON |
+| 種族値 | [PokeAPI](https://pokeapi.co/) | `scripts/` で取得して `data/` に固める。実行時には叩かない |
 
-発売予定日にポケカ公式を使っているのは、tcgdex の `releaseDate` が実用にならないためです。
-更新が遅く、発売済みの直近弾すら入っていないことがあり、未発売の弾は当然載りません。
+カード画像・発売日ともに公式サイトを使います。第三者のカードDB（tcgdex や
+pokemontcg.io）は、新しい弾のカードに画像が付かない・日本の発売日を持たないため
+実用になりません。
 
-`resultAPI.php` はドキュメント化されていないエンドポイントなので、次の点に注意してください。
+公式サイトの2つはどちらもドキュメント化されていないエンドポイントなので、
+次の点に注意してください。
 
-- 予告なく壊れる。壊れたことは `rake test_live`（CI の `live` ジョブ）で気付く想定です
+- 予告なく壊れる。壊れたことは `rake test_live`（CI の `live` ジョブ）で気付く想定です。
+  **壊れ方の切り分けは `.claude/skills/diagnose-card-api/` にまとめています**
+- `POST` は CloudFront に 403 で弾かれます。どちらも GET で叩きます
 - 発売日は `"2026年 9月16日（水）"` という**表示用の日本語文字列**で返る。
   月が1桁だと桁揃えの半角スペースが入るため、`parse_japanese_release_date` で吸収しています
-- 公式サイトには画像等の無断転載禁止の記載があるため、Bot が出すのは
-  **発売日・商品名・価格・公式ページへのリンク**だけにとどめ、画像は転載していません
+- カード検索は `sm_and_keyword=true` が無いと **`keyword` が黙って無視され全カード（2万件超）が返る**。
+  0件になるのではなく無関係なカードが返るので、HTTP ステータスでは検知できません
+- ホスト名と URL の組み立ては `lib/pokemon_card_site.rb` に集約しています
+
+### 画像の扱いについて
+
+公式サイトには画像等の無断転載禁止の記載があります。カード画像を出すのは
+`/pokemon_card` だけに限定しています。
+
+`/pokemon_release` は **発売日・商品名・価格・公式ページへのリンク**だけを出し、
+商品画像は転載していません。ここに画像を足さないでください。
 
 ## ログの方針
 
@@ -171,13 +185,39 @@ lock が古いままだと Docker ビルドが失敗します。
 
 ## カード画像の検索仕様
 
-tcgdex の `?name=` は**部分一致**検索です（`リザードン` で `リザードンex` や
-`メガリザードンXex` も返る）。そのため取得後に完全一致と部分一致へ振り分け、
-**完全一致があればそこから選び、無い場合のみ部分一致へフォールバック**します。
+`/pokemon_card` は 5 段階で候補を絞ります（`lib/pokemon_image.rb`）。
 
-振り分けは「画像を持つカードで絞り込んだ後」に行います。完全一致カードが存在しても
-画像が未整備な弾があり（例: `リザードン` の `PMCG1-021`）、先に振り分けると
-画像を出せずに失敗するためです。
+1. **空白だけの検索語を弾く** — `blank_search_query?`。API に投げる前に打ち切る
+2. **ページを集める** — 1ページ39件。`maxPage` まで、`CARD_SEARCH_MAX_PAGES` を上限に取得
+3. **画像なしを落とす** — `build_card` が `cardThumbFile` を持たないカードを捨てる
+4. **名前で絞る** — `select_cards_by_name` が、名前に検索語を含まないものを捨てる
+5. **完全一致 / 部分一致に振り分ける** — 完全一致があればそこから選び、無い場合のみ部分一致へ
+
+順番に理由があります。
+
+**空白だけの検索語を手前で弾くのは、API が `keyword` を無視して全カード（2万件超）を
+返すためです。** 全角スペースも API 側でトリムされるので同じ結果になります
+（`String#strip` では落ちないため、判定は `[[:space:]]` で行います）。しかも正規化後が
+空文字だと `''.include?` が常に真になり、後段の名前での絞り込みまで効きません。
+Discord の `required` 指定は空文字を防ぎますが、スペース1個の入力は通ってしまいます。
+
+**複数ページ見るのは、完全一致カードが1ページ目に固まらないためです。**
+`リザードン` は全93件・3ページで、完全一致は page1 に3件 / page2 に6件 / page3 に9件と
+散らばります。ただし `ピカチュウ` は全レギュレーションで8ページあるので上限を置いています。
+
+**`maxPage` を超える `page` を投げると、空ではなく最終ページが返ってきます。**
+終端は必ず `maxPage` で判定してください。空判定にすると同じページを延々と取り続けます。
+
+**名前で絞るのは、公式の `keyword` がカード名だけでなくカードテキストも検索対象に
+しているためです。** `サンド` で `ホーホー` や `カバルドン`（ワザの説明文に「サンド」を含む）
+まで返ります。この絞り込みが無いと無関係なカードの画像が出ます。
+
+**画像フィルタを一致度の振り分けより先に行うのは、完全一致カードが存在しても画像が
+未整備な弾があるためです。** 先に振り分けると画像を出せずに失敗します。
+
+カード名には `cardNameAltText` を使います。`cardNameViewText` は旧メガ表記で
+`<span class="pcg pcg-megamark"></span>リザードンEX` のように HTML を含み、名前の比較に
+使えません。
 
 ## 種族値データ (`data/pokemon_data.json`)
 
